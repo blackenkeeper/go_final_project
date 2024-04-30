@@ -24,3 +24,62 @@
 2024/04/29 15:36:06 Starting the server on port :7540
 2024/04/29 15:36:32 Stopping the server...
 2024/04/29 15:36:32 Server stopped.
+2024/04/29 15:39:31 Starting the server on port :7540
+2024/04/29 15:48:54 Stopping the server...
+2024/04/29 15:48:54 Server stopped.
+2024/04/30 18:12:50 Starting the server on port :7540
+2024/04/30 18:17:42 Stopping the server...
+2024/04/30 18:17:42 Server stopped.
+2024/04/30 18:17:42 There's a problem with open db-file: sql: unknown driver "sqlite3" (forgotten import?)n
+2024/04/30 18:21:59 Starting the server on port :7540
+2024/04/30 18:22:36 Stopping the server...
+2024/04/30 18:22:36 Server stopped.
+2024/04/30 18:22:36 There's a problem with open db-file: sql: unknown driver "sqlite3" (forgotten import?)
+2024/04/30 18:23:19 Starting the server on port :7540
+2024/04/30 18:24:02 Stopping the server...
+2024/04/30 18:24:02 Server stopped.
+2024/04/30 18:29:28 Starting the server on port :7540
+2024/04/30 18:31:01 Stopping the server...
+2024/04/30 18:31:01 Server stopped.
+2024/04/30 18:31:04 Starting the server on port :7540
+2024/04/30 23:18:17 Starting the server on port :7540
+2024/04/30 23:18:17 Server stopped with error: listen tcp :7540: bind: address already in use
+2024/04/30 23:19:22 Starting the server on port :7540
+2024/04/30 23:19:22 Server stopped with error: listen tcp :7540: bind: address already in use
+2024/04/30 23:20:47 Starting the server on port :7540
+2024/04/30 23:20:47 Server stopped with error: listen tcp :7540: bind: address already in use
+2024/04/30 23:25:14 There's a problem with open db-file: sql: unknown driver "sqlite" (forgotten import?)
+2024/04/30 23:25:17 There's a problem with open db-file: sql: unknown driver "sqlite" (forgotten import?)
+2024/04/30 23:25:45 Starting the server on port :7540
+2024/04/30 23:25:45 Server stopped with error: listen tcp :7540: bind: address already in use
+2024/04/30 23:26:09 Stopping the server...
+2024/04/30 23:26:09 Server stopped.
+2024/04/30 23:26:21 Starting the server on port :7540
+2024/04/30 23:26:21 Server stopped with error: listen tcp :7540: bind: address already in use
+2024/04/30 23:26:38 Stopping the server...
+2024/04/30 23:26:38 Server stopped.
+2024/04/30 23:28:33 Starting the server on port :7540
+2024/04/30 23:28:33 Server stopped with error: listen tcp :7540: bind: address already in use
+2024/04/30 23:30:51 Stopping the server...
+2024/04/30 23:30:51 Server stopped.
+2024/04/30 23:31:33 Stopping the server...
+2024/04/30 23:31:33 Server stopped.
+2024/04/30 23:31:33 There's a problem with open db-file: sql: unknown driver "sqlite" (forgotten import?)
+2024/04/30 23:31:46 Starting the server on port :7540
+2024/04/30 23:33:08 Stopping the server...
+2024/04/30 23:33:08 Server stopped.
+2024/04/30 23:37:21 Starting the server on port :7540
+2024/04/30 23:39:42 Starting the server on port :7540
+2024/04/30 23:43:44 Stopping the server...
+2024/04/30 23:43:44 Server stopped.
+2024/04/30 23:44:41 Starting the server on port :7540
+2024/04/30 23:45:03 Stopping the server...
+2024/04/30 23:45:03 Server stopped.
+2024/04/30 23:45:33 Starting the server on port :7540
+2024/04/30 23:45:42 Stopping the server...
+2024/04/30 23:45:42 Server stopped.
+2024/04/30 23:56:48 Starting the server on port :7540
+2024/04/30 23:56:56 Stopping the server...
+2024/05/01 00:00:55 Starting the server on port :7540
+2024/05/01 00:10:40 Stopping the server...
+2024/05/01 00:10:40 Server stopped.
