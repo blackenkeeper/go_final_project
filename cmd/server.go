@@ -18,6 +18,7 @@ var (
 
 func setupServer() {
 	http.Handle("/", http.FileServer(http.Dir(webDir)))
+	http.HandleFunc("/api/nextdate", NextDateHandler)
 	addr := fmt.Sprintf(":%s", setupPort())
 
 	log.Println("Starting the server on port", addr)

@@ -83,3 +83,104 @@
 2024/05/01 00:00:55 Starting the server on port :7540
 2024/05/01 00:10:40 Stopping the server...
 2024/05/01 00:10:40 Server stopped.
+2024/05/01 12:51:56 Starting the server on port :7540
+2024/05/01 13:02:10 Stopping the server...
+2024/05/01 13:02:10 Server stopped.
+2024/05/01 13:02:13 Starting the server on port :7540
+2024/05/01 13:04:24 Stopping the server...
+2024/05/01 13:04:24 Server stopped.
+2024/05/01 13:04:49 Starting the server on port :7540
+2024/05/01 13:07:48 Stopping the server...
+2024/05/01 13:07:48 Server stopped.
+2024/05/01 13:07:51 Starting the server on port :7540
+2024/05/01 14:39:19 Stopping the server...
+2024/05/01 14:39:19 Server stopped.
+2024/05/01 14:39:22 Starting the server on port :7540
+2024/05/01 14:40:35 Ошибка конвертации значения из массива 'repeatRule': strconv.Atoi: parsing "y": invalid syntax
+2024/05/01 14:41:39 Starting the server on port :7540
+2024/05/01 14:44:58 Неподдерживаемый формат
+2024/05/01 14:50:37 Starting the server on port :7540
+2024/05/01 14:50:47 Неподдерживаемый формат
+2024/05/01 14:54:12 Starting the server on port :7540
+2024/05/01 14:54:19 Указан неверный формат даты: parsing time "d 40" as "20060102": cannot parse "d 40" as "2006"
+2024/05/01 15:56:43 Starting the server on port :7540
+2024/05/01 15:57:00 Неподдерживаемый формат
+2024/05/01 17:00:52 Starting the server on port :7540
+2024/05/01 17:01:01 Указан неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 17:02:55 Starting the server on port :7540
+2024/05/01 17:03:21 Starting the server on port :7540
+2024/05/01 17:04:30 Starting the server on port :7540
+2024/05/01 17:05:41 Starting the server on port :7540
+2024/05/01 17:10:30 Starting the server on port :7540
+2024/05/01 17:11:39 Starting the server on port :7540
+2024/05/01 17:12:38 Starting the server on port :7540
+2024/05/01 17:13:25 Starting the server on port :7540
+2024/05/01 17:48:04 Starting the server on port :7540
+2024/05/01 17:52:45 Указан неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 17:57:16 Starting the server on port :7540
+2024/05/01 17:57:35 Указан неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 18:08:39 Starting the server on port :7540
+2024/05/01 18:08:59 Указан неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 20:39:02 Starting the server on port :7540
+2024/05/01 20:40:08 Starting the server on port :7540
+2024/05/01 20:41:04 Указан неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 20:42:56 Starting the server on port :7540
+2024/05/01 20:43:21 Stopping the server...
+2024/05/01 20:43:21 Server stopped.
+2024/05/01 21:10:27 Starting the server on port :7540
+2024/05/01 21:10:37 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 21:10:37 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/01 21:19:19 Stopping the server...
+2024/05/01 21:19:19 Server stopped.
+2024/05/01 21:30:31 Starting the server on port :7540
+2024/05/01 21:30:40 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 21:30:40 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/01 22:30:51 Stopping the server...
+2024/05/01 22:30:51 Server stopped.
+2024/05/01 22:41:18 Starting the server on port :7540
+2024/05/01 22:41:28 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/01 22:41:28 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/02 23:29:23 Stopping the server...
+2024/05/02 23:29:23 Server stopped.
+2024/05/02 23:29:27 Starting the server on port :7540
+2024/05/02 23:29:40 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/02 23:29:40 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/02 23:33:39 Stopping the server...
+2024/05/02 23:33:39 Server stopped.
+2024/05/02 23:33:41 Starting the server on port :7540
+2024/05/02 23:33:50 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/02 23:33:50 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/05 11:38:03 Stopping the server...
+2024/05/05 11:38:03 Server stopped.
+2024/05/05 11:39:00 Starting the server on port :7540
+2024/05/05 11:39:12 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/05 11:39:12 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/05 11:41:53 Stopping the server...
+2024/05/05 11:42:52 Starting the server on port :7540
+2024/05/05 11:44:08 Starting the server on port :7540
+2024/05/05 11:53:28 Starting the server on port :7540
+2024/05/05 11:54:41 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/05 11:54:41 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/05 11:55:37 Stopping the server...
+2024/05/05 11:55:37 Server stopped.
+2024/05/05 11:55:43 Starting the server on port :7540
+2024/05/05 12:15:21 Starting the server on port :7540
+2024/05/05 12:21:01 Starting the server on port :7540
+2024/05/05 12:31:54 Starting the server on port :7540
+2024/05/05 12:57:55 Starting the server on port :7540
+2024/05/05 12:58:14 Starting the server on port :7540
+2024/05/05 12:58:26 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/05 12:58:26 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/05 13:02:24 Stopping the server...
+2024/05/05 13:02:24 Server stopped.
+2024/05/05 13:02:25 Starting the server on port :7540
+2024/05/05 13:09:55 Starting the server on port :7540
+2024/05/05 13:10:06 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/05 13:10:06 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/05 13:13:22 Stopping the server...
+2024/05/05 13:13:22 Server stopped.
+2024/05/05 13:13:27 Starting the server on port :7540
+2024/05/05 13:13:43 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/05 13:13:43 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/05 16:40:05 Stopping the server...
+2024/05/05 16:40:05 Server stopped.
