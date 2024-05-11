@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	//"github.com/blackenkeeper/go_final_project/logs"
+	//"github.com/blackenkeeper/go_final_project/server"
 )
 
 func main() {
@@ -11,7 +13,7 @@ func main() {
 		}
 	}()
 
-	setupLogging()
-	setupDB()
-	setupServer()
+	logs.setupLogging()
+	server.setupDB()
+	server.setupServer()
 }
