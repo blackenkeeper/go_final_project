@@ -333,3 +333,33 @@
 2024/05/09 21:38:19 Starting the server on port :7540
 2024/05/09 21:39:14 Stopping the server...
 2024/05/09 21:39:14 Server stopped.
+2024/05/09 21:41:10 Starting the server on port :7540
+2024/05/09 21:41:52 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/09 21:41:52 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/09 21:43:07 Stopping the server...
+2024/05/09 21:43:07 Server stopped.
+2024/05/09 21:43:21 Starting the server on port :7540
+2024/05/09 22:00:08 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/09 22:00:08 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/09 22:46:02 Stopping the server...
+2024/05/09 22:46:02 Server stopped.
+2024/05/09 22:46:14 Starting the server on port :7540
+2024/05/09 22:46:26 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/09 22:46:26 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/09 22:53:10 Stopping the server...
+2024/05/09 22:53:10 Server stopped.
+2024/05/10 22:37:31 Starting the server on port :7540
+2024/05/10 22:37:51 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/10 22:37:51 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/10 22:39:53 Stopping the server...
+2024/05/10 22:39:53 Server stopped.
+2024/05/10 22:39:56 Starting the server on port :7540
+2024/05/10 22:40:03 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/10 22:40:03 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/10 22:53:49 Неверный формат даты: parsing time "15000156": day out of range
+2024/05/10 22:53:49 Неверный формат даты: parsing time "ooops" as "20060102": cannot parse "ooops" as "2006"
+2024/05/10 23:04:22 Stopping the server...
+2024/05/10 23:04:22 Server stopped.
+2024/05/11 15:21:09 Starting the server on port :7540
+2024/05/11 15:25:23 Stopping the server...
+2024/05/11 15:25:23 Server stopped.

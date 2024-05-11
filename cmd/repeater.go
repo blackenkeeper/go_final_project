@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-var weekDays = map[string]int{
+var weekdays = map[string]int{
 	"1": int(time.Monday),
 	"2": int(time.Tuesday),
 	"3": int(time.Wednesday),
@@ -32,21 +32,6 @@ var monthsDays = map[int]int{
 	10: 31,
 	11: 30,
 	12: 31,
-}
-
-var monthsLegit = map[int]bool{
-	1:  false,
-	2:  false,
-	3:  false,
-	4:  false,
-	5:  false,
-	6:  false,
-	7:  false,
-	8:  false,
-	9:  false,
-	10: false,
-	11: false,
-	12: false,
 }
 
 func NextDate(now time.Time, date string, repeat string) (string, error) {
@@ -79,11 +64,9 @@ func isLeapYear(year int) bool {
 	return year%4 == 0 && (year%100 != 0 || year%400 == 0)
 }
 
-func findNearestMonth(date time.Time) time.Time {
-	currentMonth := int(date.Month())
-	if currentMonth != 12 {
-		currentMonth++
-	} else {
+func nearestMonthFinder(date time.Time, monthsLegit map[int]bool) time.Time {
+	currentMonth := int(date.Month()) + 1
+	if currentMonth > 12 {
 		currentMonth = 1
 	}
 
@@ -100,6 +83,9 @@ func findNearestMonth(date time.Time) time.Time {
 		for i := 1; i < currentMonth; i++ {
 			if monthsLegit[i] {
 				date = time.Date(date.Year()+1, time.Month(i), date.Day(), 0, 0, 0, 0, time.UTC)
+				if !isLeapYear(date.Year()) {
+					monthsDays[2] = 28
+				}
 				break
 			}
 		}
@@ -113,11 +99,11 @@ func yearRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 		return "", errors.New("для параметра правила 'y' нельзя указать число, только сам параметр")
 	}
 
-	if taskDate.Equal(now) || taskDate.After(now) {
+	if taskDate.After(now) {
 		taskDate = taskDate.AddDate(1, 0, 0)
 	}
 
-	for taskDate.Before(now) {
+	for !taskDate.After(now) {
 		taskDate = taskDate.AddDate(1, 0, 0)
 	}
 
@@ -143,11 +129,11 @@ func dayRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 		return "", errors.New("значение для 'd' за пределами допустимого диапазона от 1 до 400")
 	}
 
-	if taskDate.Equal(now) || taskDate.After(now) {
+	if taskDate.After(now) {
 		taskDate = taskDate.AddDate(0, 0, days)
 	}
 
-	for taskDate.Before(now) {
+	for !taskDate.After(now) {
 		taskDate = taskDate.AddDate(0, 0, days)
 	}
 
@@ -161,14 +147,14 @@ func weekRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 
 	days := strings.Split(repeatRule[1], ",")
 	for _, day := range days {
-		if _, exists := weekDays[day]; !exists {
+		if _, exists := weekdays[day]; !exists {
 			return "", errors.New("введённое значение не является числом или за пределами диапазона 1-7")
 		}
 	}
 
 	for i := 0; ; {
 		var found bool
-		if time.Weekday(weekDays[days[i]]) == taskDate.Weekday() {
+		if time.Weekday(weekdays[days[i]]) == taskDate.Weekday() {
 			found = true
 			if taskDate.After(now) {
 				break
@@ -189,6 +175,21 @@ func weekRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 }
 
 func monthRule(now, taskDate time.Time, repeatRule []string) (string, error) {
+	var monthsLegit = map[int]bool{
+		1:  false,
+		2:  false,
+		3:  false,
+		4:  false,
+		5:  false,
+		6:  false,
+		7:  false,
+		8:  false,
+		9:  false,
+		10: false,
+		11: false,
+		12: false,
+	}
+
 	if len(repeatRule) < 2 || len(repeatRule) > 3 {
 		return "",
 			errors.New("не указаны дни месяца для повторения задачи или превышено " +
@@ -257,12 +258,8 @@ func monthRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 			if i+1 != len(repeatDaysInt) {
 				closestDay = repeatDaysInt[i+1]
 			}
-			if !monthsLegit[currentMonth] ||
-				closestDay == repeatDaysInt[0] {
-				taskDate = findNearestMonth(taskDate)
-			}
-			if !isLeapYear(taskDate.Year()) {
-				monthsDays[2] = 28
+			if !monthsLegit[currentMonth] || closestDay == repeatDaysInt[0] {
+				taskDate = nearestMonthFinder(taskDate, monthsLegit)
 			}
 
 			taskDate = time.Date(taskDate.Year(), taskDate.Month(), closestDay,
