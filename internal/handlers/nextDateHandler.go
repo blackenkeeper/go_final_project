@@ -1,9 +1,11 @@
-package main
+package handlers
 
 import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/blackenkeeper/go_final_project/internal/repeater"
 )
 
 func NextDateHandler(w http.ResponseWriter, r *http.Request) {
@@ -26,7 +28,7 @@ func NextDateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Вызываем функцию NextDate
-	nextDate, err := NextDate(nowTime, dateParam, repeatParam)
+	nextDate, err := repeater.NextDate(nowTime, dateParam, repeatParam)
 	if err != nil {
 		http.Error(w, "Ошибка при получении следующей даты: "+err.Error(), http.StatusInternalServerError)
 		return

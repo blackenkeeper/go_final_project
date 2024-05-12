@@ -9,6 +9,9 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+
+	"github.com/blackenkeeper/go_final_project/internal/handlers"
+	"github.com/go-chi/chi/v5"
 )
 
 var (
@@ -16,14 +19,19 @@ var (
 	wg     sync.WaitGroup
 )
 
-func setupServer() {
-	http.Handle("/", http.FileServer(http.Dir(webDir)))
-	http.HandleFunc("/api/nextdate", NextDateHandler)
+func SetupServer() {
+	r := chi.NewRouter()
+
+	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		http.FileServer(http.Dir(webDir)).ServeHTTP(w, r)
+	})
+	r.Get("/api/nextdate", handlers.NextDateHandler)
+	r.Post("/api/task", handlers.TaskHandler)
+
 	addr := fmt.Sprintf(":%s", setupPort())
 
 	log.Println("Starting the server on port", addr)
-
-	server := &http.Server{Addr: addr}
+	server := &http.Server{Addr: addr, Handler: r}
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
