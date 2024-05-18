@@ -38,7 +38,7 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 		task models.Task
 		buf  bytes.Buffer
 	)
-	answer := models.HandlerAnswer{}
+	answer := models.AnswerHandler{}
 
 	db, err := sql.Open("sqlite", database.GetDbFile())
 	if err != nil {
@@ -48,11 +48,11 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err = buf.ReadFrom(r.Body)
 	if err != nil {
-		errorsHandler(w, err, answer)
+		ErrorsHandler(w, err, answer)
 		return
 	}
 	if err = json.Unmarshal(buf.Bytes(), &task); err != nil {
-		errorsHandler(w, err, answer)
+		ErrorsHandler(w, err, answer)
 		return
 	}
 	if !taskChecker(w, answer, &task) {
@@ -61,20 +61,20 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	insertQuery := "insert into scheduler (date, title, comment, repeat) values (?, ?, ?, ?);"
 	res, err := db.Exec(insertQuery, task.Date, task.Title, task.Comment, task.Repeat)
 	if err != nil {
-		errorsHandler(w, err, answer)
+		ErrorsHandler(w, err, answer)
 		return
 	}
 
 	id, err := res.LastInsertId()
 	if err != nil {
-		errorsHandler(w, err, answer)
+		ErrorsHandler(w, err, answer)
 		return
 	}
 	answer.ID = int(id)
 
 	bodyPage, err := json.Marshal(answer)
 	if err != nil {
-		errorsHandler(w, err, answer)
+		ErrorsHandler(w, err, answer)
 		return
 	}
 
@@ -86,18 +86,11 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 }
 
-func errorsHandler(w http.ResponseWriter, err error, answer models.HandlerAnswer) {
-	answer.Error = err.Error()
-	bodyPage, _ := json.Marshal(answer)
-	w.WriteHeader(http.StatusBadRequest)
-	w.Write(bodyPage)
-}
-
-func taskChecker(w http.ResponseWriter, answer models.HandlerAnswer, task *models.Task) bool {
+func taskChecker(w http.ResponseWriter, answer models.AnswerHandler, task *models.Task) bool {
 	now := time.Now().Format("20060102")
 
 	if task.Title == "" {
-		errorsHandler(w, errors.New("не указан заголовок"), answer)
+		ErrorsHandler(w, errors.New("не указан заголовок"), answer)
 		return false
 	}
 	if task.Date == "" {
@@ -105,17 +98,17 @@ func taskChecker(w http.ResponseWriter, answer models.HandlerAnswer, task *model
 	}
 	_, err := time.Parse("20060102", task.Date)
 	if err != nil {
-		errorsHandler(w, err, answer)
+		ErrorsHandler(w, err, answer)
 		return false
 	}
 
-	if task.Repeat != "" && task.Date != now {
+	if task.Repeat != "" && task.Date < now {
 		task.Date, err = repeater.NextDate(time.Now(), task.Date, task.Repeat)
 		if err != nil {
-			errorsHandler(w, err, answer)
+			ErrorsHandler(w, err, answer)
 			return false
 		}
-	} else {
+	} else if task.Date < now {
 		task.Date = now
 	}
 

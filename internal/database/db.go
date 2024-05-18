@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/blackenkeeper/go_final_project/internal/utils"
 	_ "modernc.org/sqlite"
 )
 
@@ -26,7 +27,7 @@ func SetupDB() {
 	if install {
 		createTable := fmt.Sprint("create table if not exists 'scheduler'(",
 			"id integer primary key, ",
-			"date varchar(8) not null default '' check(length(date) = 8), ",
+			"date char(8) not null default '' , ",
 			"title varchar(64) not null default '', ",
 			"comment varchar(256) not null default '', ",
 			"repeat varchar(128) not null default ''",
@@ -45,17 +46,19 @@ func SetupDB() {
 }
 
 func GetDbFile() string {
-	envFilePath := os.Getenv("TODO_DBFILE")
+	envFile := os.Getenv("TODO_DBFILE")
 
-	if envFilePath == "" {
-		envFilePath = "../scheduler.db"
+	if envFile == "" {
+		envFile = "scheduler.db"
 	}
 
 	path, err := os.Getwd()
 	if err != nil {
 		log.Fatalln(err)
 	}
-	dbFilePath := filepath.Join(path, envFilePath)
+
+	path = utils.CmdPathChecker(path)
+	dbFilePath := filepath.Join(path, envFile)
 
 	return dbFilePath
 }
