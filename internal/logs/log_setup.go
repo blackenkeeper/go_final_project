@@ -7,6 +7,7 @@ import (
 	"github.com/blackenkeeper/go_final_project/internal/utils"
 )
 
+// Функция для настройки работы логов
 func SetupLogging() {
 	filepath, err := os.Getwd()
 	if err != nil {

@@ -11,6 +11,7 @@ import (
 	_ "modernc.org/sqlite"
 )
 
+// Настройка и запуск базы данных
 func SetupDB() {
 	var install bool
 	_, err := os.Stat(GetDbFile())
@@ -20,7 +21,7 @@ func SetupDB() {
 
 	database, err := sql.Open("sqlite", GetDbFile())
 	if err != nil {
-		log.Fatalf("There's a problem with open db-file: %s\n", err)
+		log.Fatalf("Проблема с открытием файла базы данных: %s\n", err)
 	}
 	defer database.Close()
 
@@ -35,16 +36,18 @@ func SetupDB() {
 
 		_, err = database.Exec(createTable)
 		if err != nil {
-			log.Fatalf("Cannot create a table with db.Exec(): %s\n", err)
+			log.Fatalf("Невозможно создать базу данных вызовом db.Exec(): %s\n", err)
 		}
 		indexById := "create index id_index on scheduler (id);"
 		_, err = database.Exec(indexById)
 		if err != nil {
-			log.Fatalf("Cannot create an index for table scheduler: %s\n", err)
+			log.Fatalf("Ошибка создания индекса для таблицы scheduler: %s\n", err)
 		}
 	}
 }
 
+// GetDbFile возвращает путь к базе данных. Расчитывается исходя из текущей рабочей директории,
+// создаёт файл в ней, если его нет. Название файла можно задавать в переменной окружения TODO_DBFILE.
 func GetDbFile() string {
 	envFile := os.Getenv("TODO_DBFILE")
 

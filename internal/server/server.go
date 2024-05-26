@@ -18,22 +18,28 @@ var (
 	wg     sync.WaitGroup
 )
 
+// Функция создаёт сервер и запускает сервер на заданном порте и регистрирует обработчики путей.
+// Значение порта можно задавать в перменной окружения TODO_PORT
 func SetupServer() {
+	mux := http.NewServeMux()
 
-	http.Handle("/", http.FileServer(http.Dir(webDir)))
-	http.HandleFunc("/api/nextdate", handlers.NextDateHandler)
-	http.HandleFunc("/api/task", handlers.TaskHandler)
-	http.HandleFunc("/api/tasks", handlers.TasksHandler)
+	mux.Handle("/", http.FileServer(http.Dir(webDir)))
+	mux.HandleFunc("/api/signin", handlers.LoginHandler)
+	mux.HandleFunc("/api/nextdate", handlers.NextDateHandler)
+	mux.HandleFunc("/api/task", handlers.Auth(handlers.TaskHandler))
+	mux.HandleFunc("/api/tasks", handlers.Auth(handlers.TasksHandler))
+	mux.HandleFunc("/api/task/done", handlers.Auth(handlers.TaskDoneHandler))
+
 	addr := fmt.Sprintf(":%s", setupPort())
 
-	log.Println("Starting the server on port", addr)
+	log.Println("Запуск сервера на порте", addr)
 
-	server := &http.Server{Addr: addr}
+	server := &http.Server{Addr: addr, Handler: mux}
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Println("Server stopped with error:", err)
+			log.Println("Серевер остановлен по причине:", err)
 		}
 	}()
 
@@ -42,14 +48,16 @@ func SetupServer() {
 	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM)
 	<-signalCh
 
-	log.Println("Stopping the server...")
+	log.Println("Остановка сервера...")
 	if err := server.Shutdown(context.TODO()); err != nil {
-		log.Println("Error while stopping server:", err)
+		log.Println("Серевер остановлен по причине:", err)
 	}
 	wg.Wait()
-	log.Println("Server stopped.")
+	log.Println("Сервер остановлен.")
 }
 
+// Функция возвращат порт, на котором будет запускаться сервер. Значение может быть задано в переменной
+// окружения TODO_PORT
 func setupPort() string {
 	port := os.Getenv("TODO_PORT")
 	if port == "" {
