@@ -77,6 +77,7 @@ func (h *Handler) deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	err := h.Storage.DeleteTask(taskId)
 	if err != nil {
 		h.ErrorsHandler(w, err, answer)
+		return
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -132,6 +133,7 @@ func (h *Handler) getTaskByIdHandler(w http.ResponseWriter, r *http.Request) {
 	task, err := h.Storage.FindById(taskId)
 	if err != nil {
 		h.ErrorsHandler(w, err, answer)
+		return
 	}
 
 	taskJson, err := json.Marshal(&task)

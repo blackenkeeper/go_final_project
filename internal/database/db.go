@@ -170,37 +170,39 @@ func (s *Storage) UpdateTask(task models.Task) error {
 }
 
 func (s *Storage) FindById(id string) (models.Task, error) {
+	var task models.Task
 	if _, err := strconv.Atoi(id); err != nil {
-		return models.Task{}, err
+		return task, err
 	}
 
 	task, err := findTaskById(s, id)
 	if err != nil {
-		return models.Task{}, err
+		return task, err
 	}
 
 	return task, err
 }
 
 func (s *Storage) TaskDone(id string) (models.Task, error) {
+	var task models.Task
 	if _, err := strconv.Atoi(id); err != nil {
-		return models.Task{}, err
+		return task, err
 	}
 
 	task, err := findTaskById(s, id)
 	if err != nil {
-		return models.Task{}, err
+		return task, err
 	}
 
 	if task.Repeat != "" {
 		lastTaskDate, err := time.Parse("20060102", task.Date)
 		if err != nil {
-			return models.Task{}, err
+			return task, err
 		}
 
 		task.Date, err = repeater.NextDate(lastTaskDate, task.Date, task.Repeat)
 		if err != nil {
-			return models.Task{}, err
+			return task, err
 		}
 	}
 

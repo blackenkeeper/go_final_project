@@ -21,6 +21,7 @@ func (h *Handler) TaskDoneHandler(w http.ResponseWriter, r *http.Request) {
 	task, err := h.Storage.TaskDone(taskId)
 	if err != nil {
 		h.ErrorsHandler(w, err, answer)
+		return
 	}
 
 	taskJson, err := json.Marshal(&task)
