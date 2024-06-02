@@ -81,13 +81,13 @@ func (s *Storage) GetTasks(searchParam, limitParam string) ([]models.Task, error
 	dateParam, err := taskDateParsing(searchParam)
 	if err == nil {
 		dateString := dateParam.Format("20060102")
-		selectQuery = "select * from scheduler where date = ? limit ?;"
+		selectQuery = "SELECT * FROM scheduler WHERE date = ? LIMIT ?;"
 		rows, err = db.Query(selectQuery, dateString, limitParam)
 	} else if searchParam == "" {
-		selectQuery = "select * from scheduler order by date limit ?;"
+		selectQuery = "SELECT * FROM scheduler ORDER BY date LIMIT ?;"
 		rows, err = db.Query(selectQuery, limitParam)
 	} else {
-		selectQuery = "select * from scheduler where title like ? or comment like ? order by date limit ?;"
+		selectQuery = "SELECT * FROM scheduler WHERE title LIKE ? OR comment LIKE ? ORDER BY date LIMIT ?;"
 		searchParam = sqlLikeModder(searchParam)
 		rows, err = db.Query(selectQuery, searchParam, searchParam, limitParam)
 	}
@@ -118,7 +118,7 @@ func (s *Storage) AddTask(task models.Task) (int, error) {
 		return 0, errors.New("задача не соответствует заданному шаблону")
 	}
 
-	insertQuery := "insert into scheduler (date, title, comment, repeat) values (?, ?, ?, ?);"
+	insertQuery := "INSERT INTO scheduler (date, title, comment, repeat) VALUES (?, ?, ?, ?);"
 	res, err := s.db.Exec(insertQuery, task.Date, task.Title, task.Comment, task.Repeat)
 	if err != nil {
 		return 0, err
@@ -142,7 +142,7 @@ func (s *Storage) DeleteTask(id string) error {
 		return err
 	}
 
-	deleteQuery := "delete from scheduler where id = ?;"
+	deleteQuery := "DELETE FROM scheduler WHERE id = ?;"
 	_, err = s.db.Exec(deleteQuery, task.ID)
 	if err != nil {
 		return err
@@ -160,7 +160,7 @@ func (s *Storage) UpdateTask(task models.Task) error {
 		return err
 	}
 
-	updateQuery := "update scheduler set date = ?, title = ?, comment = ?, repeat = ? where id = ?;"
+	updateQuery := "UPDATE scheduler SET date = ?, title = ?, comment = ?, repeat = ? WHERE id = ?;"
 	_, err := s.db.Exec(updateQuery, task.Date, task.Title, task.Comment, task.Repeat, task.ID)
 	if err != nil {
 		return err
