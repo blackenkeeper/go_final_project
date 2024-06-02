@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
-	"github.com/blackenkeeper/go_final_project/internal/database"
 	"github.com/blackenkeeper/go_final_project/internal/logs"
 	"github.com/blackenkeeper/go_final_project/internal/server"
 )
@@ -11,11 +10,10 @@ import (
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
-			log.Printf("Recovered from panic: %v\n", r)
+			log.Errorf("Recovered from panic: %v\n", r)
 		}
 	}()
 
 	logs.SetupLogging()
-	database.SetupDB()
 	server.SetupServer()
 }

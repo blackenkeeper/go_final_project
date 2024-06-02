@@ -2,17 +2,35 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
+	"strconv"
+	"time"
 
-	"github.com/blackenkeeper/go_final_project/internal/utils"
+	"github.com/blackenkeeper/go_final_project/internal/models"
+	"github.com/blackenkeeper/go_final_project/internal/repeater"
+	log "github.com/sirupsen/logrus"
 	_ "modernc.org/sqlite"
 )
 
+type Storage struct {
+	db *sql.DB
+}
+
+func NewDB() (*Storage, error) {
+	s := &Storage{}
+	err := s.SetupDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return s, err
+}
+
 // Настройка и запуск базы данных
-func SetupDB() {
+func (s *Storage) SetupDB() error {
 	var install bool
 	_, err := os.Stat(GetDbFile())
 	if err != nil {
@@ -21,29 +39,176 @@ func SetupDB() {
 
 	database, err := sql.Open("sqlite", GetDbFile())
 	if err != nil {
-		log.Fatalf("Проблема с открытием файла базы данных: %s\n", err)
+		log.WithError(err).Error("Проблема с открытием файла базы данных")
+		return err
 	}
-	defer database.Close()
 
 	if install {
-		createTable := fmt.Sprint("create table if not exists 'scheduler'(",
-			"id integer primary key, ",
-			"date char(8) not null default '' , ",
-			"title varchar(64) not null default '', ",
-			"comment varchar(256) not null default '', ",
-			"repeat varchar(128) not null default ''",
+		createTable := fmt.Sprint("CREATE TABLE IF NOT EXISTS 'scheduler'(",
+			"id INTEGER PRIMARY KEY, ",
+			"date CHAR(8) NOT NULL DEFAULT '' , ",
+			"title varchar(64) NOT NULL DEFAULT '', ",
+			"comment varchar(256) NOT NULL DEFAULT '', ",
+			"repeat varchar(128) NOT NULL DEFAULT ''",
 			");")
 
 		_, err = database.Exec(createTable)
 		if err != nil {
-			log.Fatalf("Невозможно создать базу данных вызовом db.Exec(): %s\n", err)
+			log.WithError(err).Error("Невозможно создать базу данных вызовом db.Exec()")
+			return err
 		}
-		indexById := "create index id_index on scheduler (id);"
+		indexById := "CREATE INDEX id_index ON scheduler (id);"
 		_, err = database.Exec(indexById)
 		if err != nil {
-			log.Fatalf("Ошибка создания индекса для таблицы scheduler: %s\n", err)
+			log.WithError(err).Error("Ошибка создания индекса для таблицы scheduler")
+			return err
 		}
 	}
+
+	s.db = database
+	return nil
+}
+
+func (s *Storage) GetTasks(searchParam, limitParam string) ([]models.Task, error) {
+	db := s.db
+	tasks := []models.Task{}
+
+	var (
+		selectQuery string
+		rows        *sql.Rows
+	)
+
+	dateParam, err := taskDateParsing(searchParam)
+	if err == nil {
+		dateString := dateParam.Format("20060102")
+		selectQuery = "select * from scheduler where date = ? limit ?;"
+		rows, err = db.Query(selectQuery, dateString, limitParam)
+	} else if searchParam == "" {
+		selectQuery = "select * from scheduler order by date limit ?;"
+		rows, err = db.Query(selectQuery, limitParam)
+	} else {
+		selectQuery = "select * from scheduler where title like ? or comment like ? order by date limit ?;"
+		searchParam = sqlLikeModder(searchParam)
+		rows, err = db.Query(selectQuery, searchParam, searchParam, limitParam)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		task := models.Task{}
+		err = rows.Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
+		if err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, task)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return tasks, err
+}
+
+func (s *Storage) AddTask(task models.Task) (int, error) {
+	if goodTask, err := isAGoodTaskChecker(&task); !goodTask || err != nil {
+		return 0, errors.New("задача не соответствует заданному шаблону")
+	}
+
+	insertQuery := "insert into scheduler (date, title, comment, repeat) values (?, ?, ?, ?);"
+	res, err := s.db.Exec(insertQuery, task.Date, task.Title, task.Comment, task.Repeat)
+	if err != nil {
+		return 0, err
+	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+
+	return int(id), err
+}
+
+func (s *Storage) DeleteTask(id string) error {
+	if _, err := strconv.Atoi(id); err != nil {
+		return err
+	}
+
+	task, err := findTaskById(s, id)
+	if err != nil {
+		return err
+	}
+
+	deleteQuery := "delete from scheduler where id = ?;"
+	_, err = s.db.Exec(deleteQuery, task.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) UpdateTask(task models.Task) error {
+	if goodTask, err := isAGoodTaskChecker(&task); !goodTask || err != nil {
+		return errors.New("задача не соответствует заданному шаблону")
+	}
+
+	if _, err := findTaskById(s, task.ID); err != nil {
+		return err
+	}
+
+	updateQuery := "update scheduler set date = ?, title = ?, comment = ?, repeat = ? where id = ?;"
+	_, err := s.db.Exec(updateQuery, task.Date, task.Title, task.Comment, task.Repeat, task.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) FindById(id string) (models.Task, error) {
+	if _, err := strconv.Atoi(id); err != nil {
+		return models.Task{}, err
+	}
+
+	task, err := findTaskById(s, id)
+	if err != nil {
+		return models.Task{}, err
+	}
+
+	return task, err
+}
+
+func (s *Storage) TaskDone(id string) (models.Task, error) {
+	if _, err := strconv.Atoi(id); err != nil {
+		return models.Task{}, err
+	}
+
+	task, err := findTaskById(s, id)
+	if err != nil {
+		return models.Task{}, err
+	}
+
+	if task.Repeat != "" {
+		lastTaskDate, err := time.Parse("20060102", task.Date)
+		if err != nil {
+			return models.Task{}, err
+		}
+
+		task.Date, err = repeater.NextDate(lastTaskDate, task.Date, task.Repeat)
+		if err != nil {
+			return models.Task{}, err
+		}
+	}
+
+	return task, err
+}
+
+func (s *Storage) CloseDB() {
+	s.db.Close()
 }
 
 // GetDbFile возвращает путь к базе данных. Расчитывается исходя из текущей рабочей директории,
@@ -60,7 +225,6 @@ func GetDbFile() string {
 		log.Fatalln(err)
 	}
 
-	path = utils.CmdPathChecker(path)
 	dbFilePath := filepath.Join(path, envFile)
 
 	return dbFilePath

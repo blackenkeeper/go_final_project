@@ -1,23 +1,16 @@
 package logs
 
 import (
-	"log"
-	"os"
-
-	"github.com/blackenkeeper/go_final_project/internal/utils"
+	log "github.com/sirupsen/logrus"
 )
 
 // Функция для настройки работы логов
 func SetupLogging() {
-	filepath, err := os.Getwd()
-	if err != nil {
-		log.Println(err)
-	}
+	// Установка формата вывода
+	log.SetFormatter(&log.TextFormatter{
+		FullTimestamp: true,
+	})
 
-	filepath = utils.CmdPathChecker(filepath)
-	logFile, err := os.OpenFile(filepath+"logs/app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("Unable to open log file: %s\n", err)
-	}
-	log.SetOutput(logFile)
+	// Установите уровень логирования
+	log.SetLevel(log.DebugLevel)
 }
