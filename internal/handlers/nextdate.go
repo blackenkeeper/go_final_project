@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/blackenkeeper/go_final_project/internal/config"
 	"github.com/blackenkeeper/go_final_project/internal/repeater"
 	log "github.com/sirupsen/logrus"
 )
@@ -24,7 +25,7 @@ func (h *Handler) NextDateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nowTime, err := time.Parse("20060102", nowParam)
+	nowTime, err := time.Parse(config.DateFormat, nowParam)
 	if err != nil {
 		log.Warn("Ошибка парсинга параметра now:", err)
 		http.Error(w, "Ошибка парсинга параметра now: "+err.Error(), http.StatusBadRequest)

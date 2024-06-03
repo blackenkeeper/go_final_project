@@ -15,7 +15,7 @@ func (h *Handler) TaskDoneHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("Запуск обработчика TaskDoneHandler для пути api/task/done")
 	w.Header().Set("Content-Type", "application/json")
 
-	var answer models.AnswerHandler
+	var answer models.Response
 
 	taskId := r.URL.Query().Get("id")
 	task, err := h.Storage.TaskDone(taskId)

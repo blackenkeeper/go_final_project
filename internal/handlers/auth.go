@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/blackenkeeper/go_final_project/internal/config"
 	"github.com/blackenkeeper/go_final_project/internal/models"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -90,7 +90,7 @@ func (h *Handler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Debug("Попытка получения пароля из переменной окружения")
-	pass := os.Getenv("TODO_PASSWORD")
+	pass := config.Setting.Password
 	if creds.Password != pass {
 		log.Warn("Пароль из JSON не равен паролю в переменной окружения")
 		http.Error(w, "Invalid password", http.StatusUnauthorized)
@@ -107,13 +107,13 @@ func (h *Handler) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	jsonAnswer, err := json.Marshal(&map[string]string{"token": token})
 	if err != nil {
 		log.Error("Ошибка сериализации токена в JSON:", err)
-		h.ErrorsHandler(w, err, models.AnswerHandler{})
+		h.ErrorsHandler(w, err, models.Response{})
 		return
 	}
 
 	log.Info("Пользователю удалось авторизоваться")
 	w.WriteHeader(http.StatusOK)
 	if _, err = w.Write(jsonAnswer); err != nil {
-		h.ErrorsHandler(w, err, models.AnswerHandler{})
+		h.ErrorsHandler(w, err, models.Response{})
 	}
 }

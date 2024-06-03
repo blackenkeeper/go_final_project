@@ -8,12 +8,11 @@ import (
 )
 
 func main() {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Errorf("Recovered from panic: %v\n", r)
-		}
-	}()
-
 	logs.SetupLogging()
-	server.SetupServer()
+
+	err := server.SetupServer()
+	if err != nil {
+		log.Error(err)
+		return
+	}
 }

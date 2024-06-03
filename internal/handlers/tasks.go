@@ -13,7 +13,7 @@ func (h *Handler) TasksHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("Запуск обработчика TasksHandler для пути /api/tasks")
 	w.Header().Set("Content-Type", "application/json")
 
-	answer := models.AnswerHandler{}
+	answer := models.Response{}
 
 	searchParam := r.URL.Query().Get("search")
 	limitParam := r.URL.Query().Get("limit")

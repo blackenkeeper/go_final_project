@@ -9,6 +9,7 @@ import (
 	"sync"
 	"syscall"
 
+	"github.com/blackenkeeper/go_final_project/internal/config"
 	"github.com/blackenkeeper/go_final_project/internal/database"
 	"github.com/blackenkeeper/go_final_project/internal/handlers"
 	log "github.com/sirupsen/logrus"
@@ -21,13 +22,13 @@ var (
 
 // Функция создаёт сервер и запускает сервер на заданном порте и регистрирует обработчики путей.
 // Значение порта можно задавать в переменной окружения TODO_PORT
-func SetupServer() {
+func SetupServer() error {
 	mux := http.NewServeMux()
 
 	db, err := database.NewDB()
 	if err != nil {
 		log.WithError(err).Error("Ошибка создания и подключения к БД")
-		return
+		return err
 	}
 	defer db.CloseDB()
 
@@ -61,17 +62,16 @@ func SetupServer() {
 	log.Info("Остановка сервера...")
 	if err := server.Shutdown(context.TODO()); err != nil {
 		log.WithError(err).Error("Серевер остановлен с ошибкой")
+		return err
 	}
 	wg.Wait()
 	log.Info("Сервер остановлен.")
+
+	return nil
 }
 
 // Функция возвращает порт, на котором будет запускаться сервер. Значение может быть задано в переменной
 // окружения TODO_PORT
 func setupPort() string {
-	port := os.Getenv("TODO_PORT")
-	if port == "" {
-		port = "7540"
-	}
-	return port
+	return config.Setting.Port
 }

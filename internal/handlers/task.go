@@ -35,7 +35,7 @@ func (h *Handler) addTaskHandler(w http.ResponseWriter, r *http.Request) {
 	var (
 		task   models.Task
 		buf    bytes.Buffer
-		answer models.AnswerHandler
+		answer models.Response
 	)
 
 	_, err := buf.ReadFrom(r.Body)
@@ -71,7 +71,7 @@ func (h *Handler) deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("Запуск обработчика deleteTaskHandler для пути /api/task")
 	w.Header().Set("Content-Type", "application/json")
 
-	var answer models.AnswerHandler
+	var answer models.Response
 
 	taskId := r.URL.Query().Get("id")
 	err := h.Storage.DeleteTask(taskId)
@@ -94,7 +94,7 @@ func (h *Handler) updateTaskHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var (
-		answer models.AnswerHandler
+		answer models.Response
 		buf    bytes.Buffer
 		task   models.Task
 	)
@@ -127,7 +127,7 @@ func (h *Handler) getTaskByIdHandler(w http.ResponseWriter, r *http.Request) {
 	log.Debug("Запуск обработчика getTaskByIdHandler для пути /api/task")
 	w.Header().Set("Content-Type", "application/json")
 
-	var answer models.AnswerHandler
+	var answer models.Response
 
 	taskId := r.URL.Query().Get("id")
 	task, err := h.Storage.FindById(taskId)

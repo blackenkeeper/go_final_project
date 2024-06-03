@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/blackenkeeper/go_final_project/internal/config"
 	"github.com/blackenkeeper/go_final_project/internal/models"
 	"github.com/blackenkeeper/go_final_project/internal/repeater"
 	log "github.com/sirupsen/logrus"
@@ -78,9 +79,9 @@ func (s *Storage) GetTasks(searchParam, limitParam string) ([]models.Task, error
 		rows        *sql.Rows
 	)
 
-	dateParam, err := taskDateParsing(searchParam)
+	dateParam, err := time.Parse("02.01.2006", searchParam)
 	if err == nil {
-		dateString := dateParam.Format("20060102")
+		dateString := dateParam.Format(config.DateFormat)
 		selectQuery = "SELECT * FROM scheduler WHERE date = ? LIMIT ?;"
 		rows, err = db.Query(selectQuery, dateString, limitParam)
 	} else if searchParam == "" {
@@ -114,7 +115,7 @@ func (s *Storage) GetTasks(searchParam, limitParam string) ([]models.Task, error
 }
 
 func (s *Storage) AddTask(task models.Task) (int, error) {
-	if goodTask, err := isAGoodTaskChecker(&task); !goodTask || err != nil {
+	if goodTask, err := task.Validate(); !goodTask || err != nil {
 		return 0, errors.New("задача не соответствует заданному шаблону")
 	}
 
@@ -137,7 +138,7 @@ func (s *Storage) DeleteTask(id string) error {
 		return err
 	}
 
-	task, err := findTaskById(s, id)
+	task, err := s.findTask(id)
 	if err != nil {
 		return err
 	}
@@ -152,11 +153,11 @@ func (s *Storage) DeleteTask(id string) error {
 }
 
 func (s *Storage) UpdateTask(task models.Task) error {
-	if goodTask, err := isAGoodTaskChecker(&task); !goodTask || err != nil {
+	if goodTask, err := task.Validate(); !goodTask || err != nil {
 		return errors.New("задача не соответствует заданному шаблону")
 	}
 
-	if _, err := findTaskById(s, task.ID); err != nil {
+	if _, err := s.findTask(task.ID); err != nil {
 		return err
 	}
 
@@ -175,7 +176,7 @@ func (s *Storage) FindById(id string) (models.Task, error) {
 		return task, err
 	}
 
-	task, err := findTaskById(s, id)
+	task, err := s.findTask(id)
 	if err != nil {
 		return task, err
 	}
@@ -189,13 +190,13 @@ func (s *Storage) TaskDone(id string) (models.Task, error) {
 		return task, err
 	}
 
-	task, err := findTaskById(s, id)
+	task, err := s.findTask(id)
 	if err != nil {
 		return task, err
 	}
 
 	if task.Repeat != "" {
-		lastTaskDate, err := time.Parse("20060102", task.Date)
+		lastTaskDate, err := time.Parse(config.DateFormat, task.Date)
 		if err != nil {
 			return task, err
 		}
@@ -209,14 +210,36 @@ func (s *Storage) TaskDone(id string) (models.Task, error) {
 	return task, err
 }
 
+// findTask служит для поиска задачи по заданному параметру id и её возвращения в случае
+// успешного нахождения. Возвращает пустую задачу и ошибку в случае error != nil.
+func (s *Storage) findTask(id string) (models.Task, error) {
+	log.Debug("Запуск функции findTask с id:", id)
+	var (
+		err error
+	)
+
+	selectQuery := "SELECT * FROM scheduler WHERE id = ?;"
+	log.Debug("Исполнение запроса к базе данных с параметром id:", id)
+	taskRow := s.db.QueryRow(selectQuery, id)
+
+	task := models.Task{}
+	err = taskRow.Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
+	if err != nil {
+		log.Error("Ошибка при чтении данных из базы данных:", err)
+		return models.Task{}, err
+	}
+
+	log.Debug("Успешное окончание работы функции findTask")
+	return task, err
+}
+
 func (s *Storage) CloseDB() {
 	s.db.Close()
 }
 
-// GetDbFile возвращает путь к базе данных. Расчитывается исходя из текущей рабочей директории,
-// создаёт файл в ней, если его нет. Название файла можно задавать в переменной окружения TODO_DBFILE.
+// GetDbFile возвращает путь к базе данных. Название файла можно задавать в переменной окружения TODO_DBFILE.
 func GetDbFile() string {
-	envFile := os.Getenv("TODO_DBFILE")
+	envFile := config.Setting.DBFile
 
 	if envFile == "" {
 		envFile = "scheduler.db"
@@ -230,4 +253,10 @@ func GetDbFile() string {
 	dbFilePath := filepath.Join(path, envFile)
 
 	return dbFilePath
+}
+
+// sqlLikeModder служит для модификации строки для исполнения sql-запроса с параметром like (для поиска по
+// подстроке s).
+func sqlLikeModder(s string) string {
+	return "%" + s + "%"
 }

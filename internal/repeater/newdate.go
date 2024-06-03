@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/blackenkeeper/go_final_project/internal/config"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -36,7 +37,7 @@ var monthsDays = map[int]int{
 }
 
 func NextDate(now time.Time, date string, repeat string) (string, error) {
-	taskDate, err := time.Parse("20060102", date)
+	taskDate, err := time.Parse(config.DateFormat, date)
 	if err != nil {
 		log.WithError(err).Error("Неверный формат даты")
 		return "", err
@@ -80,7 +81,7 @@ func yearRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 		taskDate = taskDate.AddDate(1, 0, 0)
 	}
 
-	return taskDate.Format("20060102"), nil
+	return taskDate.Format(config.DateFormat), nil
 }
 
 func dayRule(now, taskDate time.Time, repeatRule []string) (string, error) {
@@ -110,7 +111,7 @@ func dayRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 		taskDate = taskDate.AddDate(0, 0, days)
 	}
 
-	return taskDate.Format("20060102"), nil
+	return taskDate.Format(config.DateFormat), nil
 }
 
 func weekRule(now, taskDate time.Time, repeatRule []string) (string, error) {
@@ -167,7 +168,7 @@ func weekRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 		}
 	}
 
-	return taskDate.Format("20060102"), nil
+	return taskDate.Format(config.DateFormat), nil
 }
 
 func monthRule(now, taskDate time.Time, repeatRule []string) (string, error) {
@@ -245,5 +246,5 @@ func monthRule(now, taskDate time.Time, repeatRule []string) (string, error) {
 		}
 	}
 
-	return taskDate.Format("20060102"), nil
+	return taskDate.Format(config.DateFormat), nil
 }
